@@ -1,13 +1,10 @@
 import numpy as np
 
-
-
+alfa = 7.0
 #pesos Hidden(entre a de entrada e a escondida) e Out(entre a escondida e a de saida) 
 #esse size eh o (tanto de neuronios,quantos pesos)
 pesosH = np.random.uniform(0,1, size=(5,3))
 pesosO = np.random.uniform(0,1, size=(4,1))
-
-alfa = 7.0
 #print pesosH
 #print pesosO
 
@@ -48,49 +45,51 @@ pesosO:
 
 
 def testaRede(teste):
-	respostas = []
-	entradaH = []
-	entradaO = []
-	##entre a camada de entrada e a camada escondida
-	for x in teste:
-		respostas.append(x[-1])
-		entradaH.append(np.append(x[:-1], -1)) #adicionando o -1(bias) no final das entradas
-	entradaH = np.array(entradaH)
-	saidasH = sigmoide(np.dot(entradaH,pesosH))
-	##entre a camada escondida e a camada de saida
-	for x in saidasH:
-		entradaO.append(np.append(x, -1)) #adicionando o -1(bias) no final das entradas
-	entradaO = np.array(entradaO)
-	saidasO = sigmoide(np.dot(entradaO,pesosO))
-	return saidasO,saidasH,respostas,entradasH
+    respostas = []
+    entradaH = []
+    entradaO = []
+    ##entre a camada de entrada e a camada escondida
+    for x in teste:
+        respostas.append(x[-1])
+        entradaH.append(np.append(x[:-1], -1)) #adicionando o -1(bias) no final das entradas
+    entradaH = np.array(entradaH)
+    saidasH = sigmoide(np.dot(entradaH,pesosH))
+    ##entre a camada escondida e a camada de saida
+    for x in saidasH:
+        entradaO.append(np.append(x, -1)) #adicionando o -1(bias) no final das entradas
+    entradaO = np.array(entradaO)
+    saidasO = sigmoide(np.dot(entradaO,pesosO))
+    print saidasO
+    return saidasO,saidasH,respostas,entradaH
 
 def treinaRede(teste):
-	while True:
-		saidaO,saidaH,respostas,entradasH = testaRede(teste)
-		respostas = np.reshape(respostas,(len(respostas),1))
-		erro = respostas - saidaO
-		if erro 
-			break
-		gradienteO = erro*sigmoideDerivada(saidaO)
-		deltaO = alfa * gradienteO * saidasH
-		gradienteH = gradienteO.dot(pesosO.T)*sigmoideDerivada(saidasH)
-		deltaH = alfa * gradienteH.dot(entradasH.T)
-		pesosH += deltaH
-		pesosO += deltaO
+    while True:
+        saidaO,saidaH,respostas,entradasH = testaRede(teste)
+        respostas = np.reshape(respostas,(len(respostas),1))
+        erro = respostas - saidaO
+        print erro
+        gradienteO = erro*sigmoideDerivada(saidaO)
+        deltaO = alfa * gradienteO * saidaH
+        gradienteH = gradienteO.dot(pesosO.T)*sigmoideDerivada(saidaH)
+        deltaH = alfa * gradienteH.dot(entradasH.T)
+        return deltaO,deltaH
 
 def sigmoide(x):
-	return 1.0 / (1 + np.exp(-x))
+    return 1.0 / (1 + np.exp(-x))
 
 def sigmoideDerivada(x):
-	return np.multiply(x,1-x)
+    return np.multiply(x,1-x)
 
 def computaSinapse(entrada,neuronio,bias):
-	for x in xrange(0,len(neuronio)):
-		if x == len(neuronio)-1:
-			total+=neuronio[x]*bias
-		else:
-			total += neuronio[x]*entrada[x]
-	return sigmoide(total)
+    total = 0
+    for x in xrange(0,len(neuronio)):
+        if x == len(neuronio)-1:
+            total+=neuronio[x]*bias
+        else:
+            total += neuronio[x]*entrada[x]
+    return sigmoide(total)
 
-#testaRede(Teste)
-treinaRede(Teste)
+testaRede(Teste)
+#deltO,deltH  = treinaRede(Teste)
+#pesosH = pesosH + deltH
+#pesosO = pesosO + deltO
